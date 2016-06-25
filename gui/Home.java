@@ -1,13 +1,16 @@
 package com.dyn.student.gui;
 
 import java.util.ArrayList;
-import com.dyn.names.manager.NamesManager;
-import com.dyn.server.ServerMod;
+
+import com.dyn.DYNServerConstants;
+import com.dyn.DYNServerMod;
 import com.dyn.server.packets.PacketDispatcher;
 import com.dyn.server.packets.server.RequestPlotListMessage;
-import com.dyn.server.utils.BooleanChangeEvent;
+import com.dyn.server.packets.server.ServerCommandMessage;
+import com.dyn.server.packets.server.SyncNamesMessage;
 import com.dyn.server.utils.BooleanChangeListener;
 import com.dyn.student.StudentUI;
+import com.forgeessentials.chat.Censor;
 import com.rabbit.gui.background.DefaultBackground;
 import com.rabbit.gui.component.control.Button;
 import com.rabbit.gui.component.control.PictureButton;
@@ -18,39 +21,84 @@ import com.rabbit.gui.component.list.DisplayList;
 import com.rabbit.gui.component.list.ScrollableDisplayList;
 import com.rabbit.gui.component.list.entries.ListEntry;
 import com.rabbit.gui.component.list.entries.SelectStringEntry;
+import com.rabbit.gui.component.list.entries.StringEntry;
 import com.rabbit.gui.render.TextAlignment;
 import com.rabbit.gui.show.Show;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.util.ResourceLocation;
 
 public class Home extends Show {
 
 	private EntityPlayerSP student;
 	private SelectStringEntry selectedEntry;
 	private ScrollableDisplayList plotsDisplayList;
-	private String name = "";
-	private String plotName = "";
+	private TextBox plotText;
+	private TextBox nameText;
+	private String PLOTS_TEXT = "Plot Name";
+	private String NAMES_TEXT = "Nickname";
 
 	public Home() {
 		setBackground(new DefaultBackground());
 		title = "Student Gui";
 		PacketDispatcher.sendToServer(new RequestPlotListMessage());
 
-		BooleanChangeListener listener = new BooleanChangeListener() {
-			@Override
-			public void stateChanged(BooleanChangeEvent event) {
-				if (event.getDispatcher().getFlag()) {
-					refreshList();
-				}
+		BooleanChangeListener listener = event -> {
+			if (event.getDispatcher().getFlag()) {
+				refreshList();
 			}
 		};
 		StudentUI.needsRefresh.addBooleanChangeListener(listener);
 	}
 
+	private void claimPlot() {
+		if ((DYNServerMod.selection == null) || (DYNServerMod.selection.getStart() == null)
+				|| (DYNServerMod.selection.getEnd() == null)) {
+			// selection is null or not there so do the default
+			student.sendChatMessage("//pos1 " + Math.round((student.posX - 4.5)) + "," + Math.round((student.posY - 1))
+					+ "," + Math.round((student.posZ - 4.5)));
+			student.sendChatMessage("//pos2 " + Math.round((student.posX + 4.5)) + "," + Math.round((student.posY - 1))
+					+ "," + Math.round((student.posZ + 4.5)));
+			student.sendChatMessage("/plot claim");
+			// right now it asks to confirm plot but we might not want that
+			student.sendChatMessage("/yes");
+			// how should we name a plot... maybe make them provide a name?
+			if (plotText.getText().equals(PLOTS_TEXT)) {
+				namePlot("Plot#" + (StudentUI.plots.size() + 1));
+			} else {
+				namePlot(plotText.getText());
+				plotText.setText("");
+			}
+			student.sendChatMessage("//desel");
+		} else {
+			student.sendChatMessage("/plot claim");
+			// right now it asks to confirm plot but we might not want that
+			student.sendChatMessage("/yes");
+			// how should we name a plot... maybe make them provide a name?
+			if (plotText.getText().equals(PLOTS_TEXT)) {
+				namePlot("Plot#" + (StudentUI.plots.size() + 1));
+			} else {
+				namePlot(plotText.getText());
+				plotText.setText("");
+			}
+			student.sendChatMessage("//desel");
+		}
+	}
+
+	private void entryClicked(SelectStringEntry entry, DisplayList list, int mouseX, int mouseY) {
+		selectedEntry = entry;
+	}
+
+	private void namePlot(String plotName) {
+		if (!plotName.isEmpty() && !plotName.equals(PLOTS_TEXT) && !Censor.containsSwear(plotName)) {
+			student.sendChatMessage("/plot set name " + plotName);
+			PacketDispatcher.sendToServer(new RequestPlotListMessage());
+		}
+	}
+
 	public void refreshList() {
 		plotsDisplayList.clear();
+		plotsDisplayList.add(new StringEntry("--Your Plots--"));
 		for (String s : StudentUI.plots) {
 			plotsDisplayList.add(new SelectStringEntry(s, (SelectStringEntry entry, DisplayList dlist, int mouseX,
 					int mouseY) -> entryClicked(entry, dlist, mouseX, mouseY)));
@@ -58,20 +106,36 @@ public class Home extends Show {
 		StudentUI.needsRefresh.setFlag(false);
 	}
 
-	private void entryClicked(SelectStringEntry entry, DisplayList list, int mouseX, int mouseY) {
-		selectedEntry = entry;
+	private void setNickname() {
+		if (!nameText.getText().isEmpty() && !nameText.getText().equals(NAMES_TEXT)
+				&& !Censor.containsSwear(nameText.getText())) {
+			PacketDispatcher.sendToServer(new SyncNamesMessage(nameText.getText(), student.getDisplayNameString()));
+			PacketDispatcher.sendToServer(new ServerCommandMessage(
+					"/nickname " + student.getDisplayNameString() + " " + nameText.getText().replace(' ', '_')));
+		}
+	}
+
+	private void setPos(int pos) {
+		if (pos == 1) {
+			student.sendChatMessage("//pos1 " + Math.round((student.posX)) + "," + Math.round((student.posY - 1)) + ","
+					+ Math.round((student.posZ)));
+		} else {
+			student.sendChatMessage("//pos2 " + Math.round((student.posX)) + "," + Math.round((student.posY - 1)) + ","
+					+ Math.round((student.posZ)));
+		}
 	}
 
 	@Override
 	public void setup() {
 		student = Minecraft.getMinecraft().thePlayer;
 
-		registerComponent(new TextLabel(width / 3, (int) (height * .1), width / 3, 20, "Roster Management",
-				TextAlignment.CENTER));
+		registerComponent(
+				new TextLabel(width / 3, (int) (height * .1), width / 3, 20, "Student Controls", TextAlignment.CENTER));
 
 		// The students on the Roster List for this class
 		ArrayList<ListEntry> plotList = new ArrayList<ListEntry>();
 
+		plotList.add(new StringEntry("--Your Plots--"));
 		for (String s : StudentUI.plots) {
 			plotList.add(new SelectStringEntry(s, (SelectStringEntry entry, DisplayList dlist, int mouseX,
 					int mouseY) -> entryClicked(entry, dlist, mouseX, mouseY)));
@@ -83,16 +147,16 @@ public class Home extends Show {
 		registerComponent(plotsDisplayList);
 
 		// the side buttons
-		registerComponent(new PictureButton((int) (width * .03), (int) (height * .2), 30, 30,
-				new ResourceLocation("minecraft", "textures/items/nether_star.png")).setIsEnabled(true)
-						.addHoverText("Home Page").doesDrawHoverText(true)
+		registerComponent(
+				new PictureButton((int) (width * .03), (int) (height * .2), 30, 30, DYNServerConstants.STUDENTS_IMAGE)
+						.setIsEnabled(true).addHoverText("Manage Classroom").doesDrawHoverText(true)
 						.setClickListener(but -> getStage().display(new Home())));
 
 		// registerComponent(new PictureButton((int) (width * .03), (int)
 		// (height * .35), 30, 30,
 		// new ResourceLocation("minecraft",
 		// "textures/items/ruby.png")).setIsEnabled(true)
-		// .addHoverText("Setup Student Roster").doesDrawHoverText(true)
+		// .addHoverText("Student Rosters").doesDrawHoverText(true)
 		// .setClickListener(but -> getStage().display(new Roster())));
 		//
 		// registerComponent(new PictureButton((int) (width * .03), (int)
@@ -142,25 +206,22 @@ public class Home extends Show {
 		registerComponent(new Button((int) (width * .5), (int) (height * .2), 150, 20, "Claim Plot")
 				.setClickListener(but -> claimPlot()));
 
-		registerComponent(new TextBox((int) (width * .5), (int) (height * .3), 150, 20, "Plot Name")
-				.setTextChangedListener((TextBox textbox, String previousText) -> {
-					plotName = previousText;
-				}));
+		plotText = new TextBox((int) (width * .5), (int) (height * .3), 150, 20, PLOTS_TEXT);
+
+		registerComponent(plotText);
 
 		registerComponent(new Button((int) (width * .5), (int) (height * .4), 150, 20, "Name Plot")
-				.setClickListener(but -> namePlot(plotName)));
+				.setClickListener(but -> namePlot(plotText.getText())));
 
 		registerComponent(new Button((int) (width * .5), (int) (height * .5), 150, 20, "Teleport to Plot")
 				.setClickListener(but -> teleportToPlot()));
-		
-		registerComponent(new TextBox((int) (width * .5), (int) (height * .6), 150, 20, "Nickname")
-				.setTextChangedListener((TextBox textbox, String previousText) -> {
-					name = previousText;
-				}));
+
+		nameText = new TextBox((int) (width * .5), (int) (height * .6), 150, 20, NAMES_TEXT);
+
+		registerComponent(nameText);
 
 		registerComponent(new Button((int) (width * .5), (int) (height * .7), 150, 20, "Set Nickname")
 				.setClickListener(but -> setNickname()));
-
 
 		registerComponent(new Button((int) (width * .5), (int) (height * .8), 60, 20, "Set Pos 1")
 				.setClickListener(but -> setPos(1)));
@@ -178,54 +239,14 @@ public class Home extends Show {
 
 		// The background
 		registerComponent(new Picture(width / 8, (int) (height * .15), (int) (width * (6.0 / 8.0)), (int) (height * .8),
-				new ResourceLocation("dyn", "textures/gui/background.png")));
-	}
-
-	private void claimPlot() {
-		if (ServerMod.selection == null || ServerMod.selection.getStart() == null
-				|| ServerMod.selection.getEnd() == null) {
-			// selection is null or not there so do the default
-			student.sendChatMessage(
-					"//pos1 " + Math.round((student.posX - 4.5)) + "," + Math.round((student.posY - 1)) + "," + Math.round((student.posZ - 4.5)));
-			student.sendChatMessage(
-					"//pos2 " + Math.round((student.posX + 4.5)) + "," + Math.round((student.posY - 1)) + "," + Math.round((student.posZ + 4.5)));
-			student.sendChatMessage("/plot claim");
-			// right now it asks to confirm plot but we might not want that
-			student.sendChatMessage("/yes");
-			// how should we name a plot... maybe make them provide a name?
-			namePlot(""+NamesManager.getDYNUsername(student.getDisplayNameString()));
-		} else {
-			student.sendChatMessage("/plot claim");
-			// right now it asks to confirm plot but we might not want that
-			student.sendChatMessage("/yes");
-			// how should we name a plot... maybe make them provide a name?
-			namePlot(""+NamesManager.getDYNUsername(student.getDisplayNameString()));
-		}
-	}
-
-	private void namePlot(String name) {
-		if (!name.isEmpty())
-			student.sendChatMessage("/plot set name" + name);
+				DYNServerConstants.BG1_IMAGE));
 	}
 
 	private void teleportToPlot() {
 		if (selectedEntry != null) {
-			//need a way to get the plot and its center point, should be visible but will have to make a packet
-			//student.sendChatMessage("/tp ");
-		}
-	}
-
-	private void setPos(int pos) {
-		if (pos == 1) {
-			student.sendChatMessage("//pos1 " + Math.round((student.posX)) + "," + Math.round((student.posY - 1)) + "," + Math.round((student.posZ)));
-		} else {
-			student.sendChatMessage("//pos2 " + Math.round((student.posX)) + "," + Math.round((student.posY - 1)) + "," + Math.round((student.posZ)));
-		}
-	}
-	
-	private void setNickname(){
-		if(!name.isEmpty()){
-			student.sendChatMessage("/nickname " + student.getDisplayNameString() + " " + name);
+			// need a way to get the plot and its center point, should be
+			// visible but will have to make a packet
+			// student.sendChatMessage("/tp ");
 		}
 	}
 }

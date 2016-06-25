@@ -2,7 +2,7 @@ package com.dyn.student.proxy;
 
 import org.lwjgl.input.Keyboard;
 
-import com.dyn.server.ServerMod;
+import com.dyn.DYNServerMod;
 import com.dyn.server.utils.PlayerLevel;
 import com.dyn.student.StudentUI;
 import com.dyn.student.gui.Home;
@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ScreenShotHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -25,24 +26,31 @@ public class Client implements Proxy {
 
 	@Override
 	public void init() {
-		MinecraftForge.EVENT_BUS.register(this);
-
-		studentKey = new KeyBinding("key.toggle.studentui", Keyboard.KEY_M, "key.categories.toggle");
-
-		ClientRegistry.registerKeyBinding(studentKey);
+		if ((DYNServerMod.status == PlayerLevel.STUDENT)) {
+			MinecraftForge.EVENT_BUS.register(this);
+			studentKey = new KeyBinding("key.toggle.studentui", Keyboard.KEY_M, "key.categories.toggle");
+			ClientRegistry.registerKeyBinding(studentKey);
+		}
 	}
 
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
+		if (Minecraft.getMinecraft().gameSettings.keyBindScreenshot.isPressed()) {
+			// not sure if we can cancel keyevents but whatever this will save
+			// an image to the specified directory
+			event.setCanceled(true);
+			ScreenShotHelper.saveScreenshot(DYNServerMod.screenshotPath, Minecraft.getMinecraft().displayWidth,
+					Minecraft.getMinecraft().displayHeight, Minecraft.getMinecraft().getFramebuffer());
+		}
 
 		if ((Minecraft.getMinecraft().currentScreen instanceof GuiChat)) {
 			return;
 		}
-		if (studentKey.isPressed() && ServerMod.status == PlayerLevel.STUDENT) {
+		if (studentKey.isPressed()) {
 			GuiFoundation.proxy.display(new Home());
 		}
 	}
-	
+
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onPlayerUpdate(LivingEvent.LivingUpdateEvent event) {
 		if (event.entity instanceof EntityPlayer) {
@@ -53,7 +61,7 @@ public class Client implements Proxy {
 			}
 		}
 	}
-	
+
 	/**
 	 * @see forge.reference.proxy.Proxy#renderGUI()
 	 */

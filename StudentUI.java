@@ -1,6 +1,5 @@
 package com.dyn.student;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +17,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
 public class StudentUI {
 
-	public static List<String> plots = new ArrayList();
+	public static List<String> plots = new ArrayList<String>();
 	public static BooleanListener needsRefresh = new BooleanListener(false);
-	
+
 	@Mod.Instance(Reference.MOD_ID)
 	public static StudentUI instance;
 
@@ -34,11 +33,12 @@ public class StudentUI {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
+
 		proxy.init();
 	}
 
 	@Mod.EventHandler
-	public void preInit(FMLPreInitializationEvent event) {		
+	public void preInit(FMLPreInitializationEvent event) {
 		metadata = MetaData.init(metadata);
 	}
 }
