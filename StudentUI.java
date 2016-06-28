@@ -3,10 +3,10 @@ package com.dyn.student;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dyn.server.utils.BooleanListener;
 import com.dyn.student.proxy.Proxy;
 import com.dyn.student.reference.MetaData;
 import com.dyn.student.reference.Reference;
+import com.dyn.utils.BooleanListener;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModMetadata;

@@ -3,9 +3,9 @@ package com.dyn.student.proxy;
 import org.lwjgl.input.Keyboard;
 
 import com.dyn.DYNServerMod;
-import com.dyn.server.utils.PlayerLevel;
 import com.dyn.student.StudentUI;
 import com.dyn.student.gui.Home;
+import com.dyn.utils.PlayerLevel;
 import com.rabbit.gui.GuiFoundation;
 
 import net.minecraft.client.Minecraft;
