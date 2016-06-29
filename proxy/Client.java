@@ -4,7 +4,7 @@ import org.lwjgl.input.Keyboard;
 
 import com.dyn.DYNServerMod;
 import com.dyn.student.StudentUI;
-import com.dyn.student.gui.Home;
+import com.dyn.student.gui.Requests;
 import com.dyn.utils.PlayerLevel;
 import com.rabbit.gui.GuiFoundation;
 
@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ScreenShotHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -26,6 +25,7 @@ public class Client implements Proxy {
 
 	@Override
 	public void init() {
+		// student gui is disabled for the time being until its more mature
 		if ((DYNServerMod.status == PlayerLevel.STUDENT)) {
 			MinecraftForge.EVENT_BUS.register(this);
 			studentKey = new KeyBinding("key.toggle.studentui", Keyboard.KEY_M, "key.categories.toggle");
@@ -35,19 +35,12 @@ public class Client implements Proxy {
 
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
-		if (Minecraft.getMinecraft().gameSettings.keyBindScreenshot.isPressed()) {
-			// not sure if we can cancel keyevents but whatever this will save
-			// an image to the specified directory
-			event.setCanceled(true);
-			ScreenShotHelper.saveScreenshot(DYNServerMod.screenshotPath, Minecraft.getMinecraft().displayWidth,
-					Minecraft.getMinecraft().displayHeight, Minecraft.getMinecraft().getFramebuffer());
-		}
 
 		if ((Minecraft.getMinecraft().currentScreen instanceof GuiChat)) {
 			return;
 		}
-		if (studentKey.isPressed()) {
-			GuiFoundation.proxy.display(new Home());
+		if ((DYNServerMod.status == PlayerLevel.STUDENT) && studentKey.isPressed()) {
+			GuiFoundation.proxy.display(new Requests());
 		}
 	}
 
