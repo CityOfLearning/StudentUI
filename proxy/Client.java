@@ -15,7 +15,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
@@ -25,7 +24,6 @@ public class Client implements Proxy {
 
 	@Override
 	public void init() {
-		// student gui is disabled for the time being until its more mature
 		if ((DYNServerMod.status == PlayerLevel.STUDENT)) {
 			MinecraftForge.EVENT_BUS.register(this);
 			studentKey = new KeyBinding("key.toggle.studentui", Keyboard.KEY_M, "key.categories.toggle");
@@ -44,7 +42,7 @@ public class Client implements Proxy {
 		}
 	}
 
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	@SubscribeEvent
 	public void onPlayerUpdate(LivingEvent.LivingUpdateEvent event) {
 		if (event.entity instanceof EntityPlayer) {
 			if (event.entity == Minecraft.getMinecraft().thePlayer) {
