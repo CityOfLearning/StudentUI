@@ -72,8 +72,6 @@ public class Requests extends Show {
 							FileWriter fileWrite = new FileWriter(getTimestampedFileForDirectory());
 
 							fileWrite.write(request.toString());
-							System.out.println("Successfully Copied JSON Object to File...");
-							System.out.println("\nJSON Object: " + request);
 							fileWrite.close();
 							stage.close();
 						} catch (Exception e) {

@@ -6,7 +6,7 @@ import com.dyn.DYNServerMod;
 import com.dyn.student.StudentUI;
 import com.dyn.student.gui.Requests;
 import com.dyn.utils.PlayerLevel;
-import com.rabbit.gui.GuiFoundation;
+import com.rabbit.gui.RabbitGui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
@@ -38,7 +38,7 @@ public class Client implements Proxy {
 			return;
 		}
 		if ((DYNServerMod.status == PlayerLevel.STUDENT) && studentKey.isPressed()) {
-			GuiFoundation.proxy.display(new Requests());
+			RabbitGui.proxy.display(new Requests());
 		}
 	}
 
