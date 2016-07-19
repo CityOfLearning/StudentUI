@@ -22,7 +22,7 @@ public class StudentUI {
 	@Mod.Instance(Reference.MOD_ID)
 	public static StudentUI instance;
 
-	public static boolean frozen = false;
+	public static BooleanListener frozen = new BooleanListener(false);
 
 	@SidedProxy(modId = Reference.MOD_ID, clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	public static Proxy proxy;
