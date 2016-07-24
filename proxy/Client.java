@@ -2,7 +2,6 @@ package com.dyn.student.proxy;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.lwjgl.input.Keyboard;
@@ -37,7 +36,7 @@ public class Client implements Proxy {
 			MinecraftForge.EVENT_BUS.register(this);
 			studentKey = new KeyBinding("key.toggle.studentui", Keyboard.KEY_M, "key.categories.toggle");
 			ClientRegistry.registerKeyBinding(studentKey);
-			
+
 			BooleanChangeListener listener = event -> {
 				if (event.getDispatcher().getFlag()) {
 					ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -46,10 +45,10 @@ public class Client implements Proxy {
 					Runnable task = () -> StudentUI.frozen.setFlag(false);
 					executor.schedule(task, 3, TimeUnit.MINUTES);
 				} else {
-					Minecraft.getMinecraft().thePlayer.addChatMessage(
-							new ChatComponentText("You are now free to move"));
-					PacketDispatcher.sendToServer(new ServerCommandMessage(
-							"/p user " + Minecraft.getMinecraft().thePlayer.getDisplayNameString() + " group remove _FROZEN_"));
+					Minecraft.getMinecraft().thePlayer
+							.addChatMessage(new ChatComponentText("You are now free to move"));
+					PacketDispatcher.sendToServer(new ServerCommandMessage("/p user "
+							+ Minecraft.getMinecraft().thePlayer.getDisplayNameString() + " group remove _FROZEN_"));
 				}
 			};
 

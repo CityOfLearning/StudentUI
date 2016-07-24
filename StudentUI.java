@@ -18,11 +18,10 @@ public class StudentUI {
 
 	public static List<String> plots = new ArrayList<String>();
 	public static BooleanListener needsRefresh = new BooleanListener(false);
+	public static BooleanListener frozen = new BooleanListener(false);
 
 	@Mod.Instance(Reference.MOD_ID)
 	public static StudentUI instance;
-
-	public static BooleanListener frozen = new BooleanListener(false);
 
 	@SidedProxy(modId = Reference.MOD_ID, clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	public static Proxy proxy;
