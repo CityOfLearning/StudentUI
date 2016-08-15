@@ -17,7 +17,6 @@ import com.rabbit.gui.RabbitGui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
@@ -26,7 +25,6 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class Client implements Proxy {
 
@@ -65,7 +63,7 @@ public class Client implements Proxy {
 			return;
 		}
 		if ((DYNServerMod.status == PlayerLevel.STUDENT) && studentKey.isPressed()) {
-			RabbitGui.proxy.display(new Requests());
+			 RabbitGui.proxy.display(new Requests());
 		}
 	}
 

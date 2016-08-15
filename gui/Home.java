@@ -7,7 +7,7 @@ import com.dyn.DYNServerMod;
 import com.dyn.server.packets.PacketDispatcher;
 import com.dyn.server.packets.server.RequestPlotListMessage;
 import com.dyn.server.packets.server.ServerCommandMessage;
-import com.dyn.server.packets.server.SyncNamesMessage;
+import com.dyn.server.packets.server.SyncNamesServerMessage;
 import com.dyn.student.StudentUI;
 import com.dyn.utils.BooleanChangeListener;
 import com.forgeessentials.chat.Censor;
@@ -109,7 +109,8 @@ public class Home extends Show {
 	private void setNickname() {
 		if (!nameText.getText().isEmpty() && !nameText.getText().equals(NAMES_TEXT)
 				&& !Censor.containsSwear(nameText.getText())) {
-			PacketDispatcher.sendToServer(new SyncNamesMessage(nameText.getText(), student.getDisplayNameString()));
+			PacketDispatcher
+					.sendToServer(new SyncNamesServerMessage(nameText.getText(), student.getDisplayNameString()));
 			PacketDispatcher.sendToServer(new ServerCommandMessage(
 					"/nickname " + student.getDisplayNameString() + " " + nameText.getText().replace(' ', '_')));
 		}
