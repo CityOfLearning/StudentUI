@@ -1,5 +1,7 @@
 package com.dyn.student.proxy;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +31,13 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 public class Client implements Proxy {
 
 	private KeyBinding studentKey;
+
+	@Override
+	public Map<String, ?> getKeyBindings() {
+		Map<String, KeyBinding> keys = new HashMap();
+		keys.put("student", studentKey);
+		return keys;
+	}
 
 	@Override
 	public void init() {
@@ -63,7 +72,7 @@ public class Client implements Proxy {
 			return;
 		}
 		if ((DYNServerMod.status == PlayerLevel.STUDENT) && studentKey.isPressed()) {
-			 RabbitGui.proxy.display(new Requests());
+			RabbitGui.proxy.display(new Requests());
 		}
 	}
 

@@ -1,5 +1,8 @@
 package com.dyn.student.proxy;
 
+import java.util.Collections;
+import java.util.Map;
+
 import com.dyn.DYNServerMod;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,6 +11,11 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class Server implements Proxy {
+
+	@Override
+	public Map<String, ?> getKeyBindings() {
+		return Collections.EMPTY_MAP;
+	}
 
 	@Override
 	public void init() {
@@ -31,5 +39,4 @@ public class Server implements Proxy {
 		// Actions on render GUI for the server (logging)
 
 	}
-
 }
