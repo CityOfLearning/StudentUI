@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 import org.lwjgl.input.Keyboard;
 
 import com.dyn.DYNServerMod;
-import com.dyn.server.packets.PacketDispatcher;
-import com.dyn.server.packets.server.ServerCommandMessage;
+import com.dyn.server.network.NetworkDispatcher;
+import com.dyn.server.network.packets.server.ServerCommandMessage;
 import com.dyn.student.StudentUI;
 import com.dyn.student.gui.Requests;
 import com.dyn.utils.BooleanChangeListener;
@@ -41,7 +41,7 @@ public class Client implements Proxy {
 
 	@Override
 	public void init() {
-		if ((DYNServerMod.status == PlayerLevel.STUDENT)) {
+		if ((DYNServerMod.accessLevel == PlayerLevel.STUDENT)) {
 			MinecraftForge.EVENT_BUS.register(this);
 			studentKey = new KeyBinding("key.toggle.studentui", Keyboard.KEY_M, "key.categories.toggle");
 			ClientRegistry.registerKeyBinding(studentKey);
@@ -56,7 +56,7 @@ public class Client implements Proxy {
 				} else {
 					Minecraft.getMinecraft().thePlayer
 							.addChatMessage(new ChatComponentText("You are now free to move"));
-					PacketDispatcher.sendToServer(new ServerCommandMessage("/p user "
+					NetworkDispatcher.sendToServer(new ServerCommandMessage("/p user "
 							+ Minecraft.getMinecraft().thePlayer.getDisplayNameString() + " group remove _FROZEN_"));
 				}
 			};
@@ -71,7 +71,7 @@ public class Client implements Proxy {
 		if ((Minecraft.getMinecraft().currentScreen instanceof GuiChat)) {
 			return;
 		}
-		if ((DYNServerMod.status == PlayerLevel.STUDENT) && studentKey.isPressed()) {
+		if ((DYNServerMod.accessLevel == PlayerLevel.STUDENT) && studentKey.isPressed()) {
 			RabbitGui.proxy.display(new Requests());
 		}
 	}

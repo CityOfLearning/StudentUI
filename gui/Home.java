@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import com.dyn.DYNServerConstants;
 import com.dyn.DYNServerMod;
-import com.dyn.server.packets.PacketDispatcher;
-import com.dyn.server.packets.server.RequestPlotListMessage;
-import com.dyn.server.packets.server.ServerCommandMessage;
-import com.dyn.server.packets.server.SyncNamesServerMessage;
+import com.dyn.server.network.NetworkDispatcher;
+import com.dyn.server.network.packets.server.RequestPlotListMessage;
+import com.dyn.server.network.packets.server.ServerCommandMessage;
+import com.dyn.server.network.packets.server.SyncNamesServerMessage;
 import com.dyn.student.StudentUI;
 import com.dyn.utils.BooleanChangeListener;
 import com.forgeessentials.chat.Censor;
@@ -41,7 +41,7 @@ public class Home extends Show {
 	public Home() {
 		setBackground(new DefaultBackground());
 		title = "Student Gui";
-		PacketDispatcher.sendToServer(new RequestPlotListMessage());
+		NetworkDispatcher.sendToServer(new RequestPlotListMessage());
 
 		BooleanChangeListener listener = event -> {
 			if (event.getDispatcher().getFlag()) {
@@ -92,7 +92,7 @@ public class Home extends Show {
 	private void namePlot(String plotName) {
 		if (!plotName.isEmpty() && !plotName.equals(PLOTS_TEXT) && !Censor.containsSwear(plotName)) {
 			student.sendChatMessage("/plot set name " + plotName);
-			PacketDispatcher.sendToServer(new RequestPlotListMessage());
+			NetworkDispatcher.sendToServer(new RequestPlotListMessage());
 		}
 	}
 
@@ -109,9 +109,9 @@ public class Home extends Show {
 	private void setNickname() {
 		if (!nameText.getText().isEmpty() && !nameText.getText().equals(NAMES_TEXT)
 				&& !Censor.containsSwear(nameText.getText())) {
-			PacketDispatcher
+			NetworkDispatcher
 					.sendToServer(new SyncNamesServerMessage(nameText.getText(), student.getDisplayNameString()));
-			PacketDispatcher.sendToServer(new ServerCommandMessage(
+			NetworkDispatcher.sendToServer(new ServerCommandMessage(
 					"/nickname " + student.getDisplayNameString() + " " + nameText.getText().replace(' ', '_')));
 		}
 	}
