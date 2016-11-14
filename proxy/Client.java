@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.lwjgl.input.Keyboard;
 
 import com.dyn.DYNServerMod;
-import com.dyn.server.network.NetworkDispatcher;
+import com.dyn.server.network.NetworkManager;
 import com.dyn.server.network.packets.server.ServerCommandMessage;
 import com.dyn.student.StudentUI;
 import com.dyn.student.gui.Requests;
@@ -46,7 +46,7 @@ public class Client implements Proxy {
 			studentKey = new KeyBinding("key.toggle.studentui", Keyboard.KEY_M, "key.categories.toggle");
 			ClientRegistry.registerKeyBinding(studentKey);
 
-			BooleanChangeListener listener = event -> {
+			BooleanChangeListener listener = (event, show) -> {
 				if (event.getDispatcher().getFlag()) {
 					ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 					Minecraft.getMinecraft().thePlayer.addChatMessage(
@@ -56,7 +56,7 @@ public class Client implements Proxy {
 				} else {
 					Minecraft.getMinecraft().thePlayer
 							.addChatMessage(new ChatComponentText("You are now free to move"));
-					NetworkDispatcher.sendToServer(new ServerCommandMessage("/p user "
+					NetworkManager.sendToServer(new ServerCommandMessage("/p user "
 							+ Minecraft.getMinecraft().thePlayer.getDisplayNameString() + " group remove _FROZEN_"));
 				}
 			};

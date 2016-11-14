@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.dyn.DYNServerConstants;
 import com.dyn.DYNServerMod;
-import com.dyn.server.network.NetworkDispatcher;
+import com.dyn.server.network.NetworkManager;
 import com.dyn.server.network.packets.server.RequestPlotListMessage;
 import com.dyn.server.network.packets.server.ServerCommandMessage;
 import com.dyn.server.network.packets.server.SyncNamesServerMessage;
@@ -41,14 +41,19 @@ public class Home extends Show {
 	public Home() {
 		setBackground(new DefaultBackground());
 		title = "Student Gui";
-		NetworkDispatcher.sendToServer(new RequestPlotListMessage());
+		NetworkManager.sendToServer(new RequestPlotListMessage());
 
-		BooleanChangeListener listener = event -> {
+		BooleanChangeListener listener = (event, show) -> {
 			if (event.getDispatcher().getFlag()) {
 				refreshList();
 			}
 		};
-		StudentUI.needsRefresh.addBooleanChangeListener(listener);
+		StudentUI.needsRefresh.addBooleanChangeListener(listener, this);
+	}
+	
+	@Override
+	public void onClose() {
+		StudentUI.needsRefresh.removeBooleanChangeListener(this);
 	}
 
 	private void claimPlot() {
@@ -92,7 +97,7 @@ public class Home extends Show {
 	private void namePlot(String plotName) {
 		if (!plotName.isEmpty() && !plotName.equals(PLOTS_TEXT) && !Censor.containsSwear(plotName)) {
 			student.sendChatMessage("/plot set name " + plotName);
-			NetworkDispatcher.sendToServer(new RequestPlotListMessage());
+			NetworkManager.sendToServer(new RequestPlotListMessage());
 		}
 	}
 
@@ -109,9 +114,8 @@ public class Home extends Show {
 	private void setNickname() {
 		if (!nameText.getText().isEmpty() && !nameText.getText().equals(NAMES_TEXT)
 				&& !Censor.containsSwear(nameText.getText())) {
-			NetworkDispatcher
-					.sendToServer(new SyncNamesServerMessage(nameText.getText(), student.getDisplayNameString()));
-			NetworkDispatcher.sendToServer(new ServerCommandMessage(
+			NetworkManager.sendToServer(new SyncNamesServerMessage(nameText.getText(), student.getDisplayNameString()));
+			NetworkManager.sendToServer(new ServerCommandMessage(
 					"/nickname " + student.getDisplayNameString() + " " + nameText.getText().replace(' ', '_')));
 		}
 	}
