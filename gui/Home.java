@@ -50,11 +50,6 @@ public class Home extends Show {
 		};
 		StudentUI.needsRefresh.addBooleanChangeListener(listener, this);
 	}
-	
-	@Override
-	public void onClose() {
-		StudentUI.needsRefresh.removeBooleanChangeListener(this);
-	}
 
 	private void claimPlot() {
 		if ((DYNServerMod.selection == null) || (DYNServerMod.selection.getStart() == null)
@@ -99,6 +94,11 @@ public class Home extends Show {
 			student.sendChatMessage("/plot set name " + plotName);
 			NetworkManager.sendToServer(new RequestPlotListMessage());
 		}
+	}
+
+	@Override
+	public void onClose() {
+		StudentUI.needsRefresh.removeBooleanChangeListener(this);
 	}
 
 	public void refreshList() {
