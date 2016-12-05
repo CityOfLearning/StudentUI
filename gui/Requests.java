@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.dyn.DYNServerMod;
 import com.google.gson.JsonObject;
 import com.rabbit.gui.background.DefaultBackground;
 import com.rabbit.gui.component.control.Button;
@@ -75,7 +76,7 @@ public class Requests extends Show {
 							fileWrite.close();
 							stage.close();
 						} catch (Exception e) {
-							e.printStackTrace();
+							DYNServerMod.logger.error("Failed Writing File", e);
 						}
 					}
 				}));
