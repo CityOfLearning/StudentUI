@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "required-after:dyn|server")
 public class StudentUI {
 
-	public static List<String> plots = new ArrayList<String>();
+	public static List<String> plots = new ArrayList<>();
 	public static BooleanListener needsRefresh = new BooleanListener(false);
 	public static BooleanListener frozen = new BooleanListener(false);
 

@@ -138,7 +138,7 @@ public class Home extends Show {
 				new TextLabel(width / 3, (int) (height * .1), width / 3, 20, "Student Controls", TextAlignment.CENTER));
 
 		// The students on the Roster List for this class
-		ArrayList<ListEntry> plotList = new ArrayList<ListEntry>();
+		ArrayList<ListEntry> plotList = new ArrayList<>();
 
 		plotList.add(new StringEntry("--Your Plots--"));
 		for (String s : StudentUI.plots) {
