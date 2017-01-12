@@ -10,7 +10,7 @@ import com.dyn.server.network.packets.server.ServerCommandMessage;
 import com.dyn.server.network.packets.server.SyncNamesServerMessage;
 import com.dyn.student.StudentUI;
 import com.dyn.utils.BooleanChangeListener;
-import com.forgeessentials.chat.Censor;
+import com.forgeessentials.commons.Censor;
 import com.rabbit.gui.background.DefaultBackground;
 import com.rabbit.gui.component.control.Button;
 import com.rabbit.gui.component.control.PictureButton;
@@ -154,7 +154,7 @@ public class Home extends Show {
 		// the side buttons
 		registerComponent(
 				new PictureButton((int) (width * .03), (int) (height * .2), 30, 30, DYNServerConstants.STUDENTS_IMAGE)
-						.setIsEnabled(true).addHoverText("Manage Classroom").doesDrawHoverText(true)
+						.setIsEnabled(true).addHoverText("Manage Classroom").setDoesDrawHoverText(true)
 						.setClickListener(but -> getStage().display(new Home())));
 
 		// registerComponent(new PictureButton((int) (width * .03), (int)
