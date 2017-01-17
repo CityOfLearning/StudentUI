@@ -14,7 +14,7 @@ import com.dyn.server.network.packets.server.ServerCommandMessage;
 import com.dyn.student.StudentUI;
 import com.dyn.student.gui.Requests;
 import com.dyn.utils.BooleanChangeListener;
-import com.dyn.utils.PlayerLevel;
+import com.dyn.utils.PlayerAccessLevel;
 import com.rabbit.gui.RabbitGui;
 
 import net.minecraft.client.Minecraft;
@@ -41,7 +41,7 @@ public class Client implements Proxy {
 
 	@Override
 	public void init() {
-		if ((DYNServerMod.accessLevel == PlayerLevel.STUDENT)) {
+		if ((DYNServerMod.accessLevel == PlayerAccessLevel.STUDENT)) {
 			MinecraftForge.EVENT_BUS.register(this);
 			studentKey = new KeyBinding("key.toggle.studentui", Keyboard.KEY_M, "key.categories.toggle");
 			ClientRegistry.registerKeyBinding(studentKey);
@@ -71,7 +71,7 @@ public class Client implements Proxy {
 		if ((Minecraft.getMinecraft().currentScreen instanceof GuiChat)) {
 			return;
 		}
-		if ((DYNServerMod.accessLevel == PlayerLevel.STUDENT) && studentKey.isPressed()) {
+		if ((DYNServerMod.accessLevel == PlayerAccessLevel.STUDENT) && studentKey.isPressed()) {
 			RabbitGui.proxy.display(new Requests());
 		}
 	}
