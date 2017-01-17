@@ -7,6 +7,7 @@ import com.dyn.student.proxy.Proxy;
 import com.dyn.student.reference.MetaData;
 import com.dyn.student.reference.Reference;
 import com.dyn.utils.BooleanListener;
+import com.forgeessentials.commons.selections.Selection;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -19,6 +20,8 @@ public class StudentUI {
 	public static List<String> plots = new ArrayList<>();
 	public static BooleanListener needsRefresh = new BooleanListener(false);
 	public static BooleanListener frozen = new BooleanListener(false);
+
+	public static Selection selection; // requires forge essentials
 
 	@Mod.Instance(Reference.MOD_ID)
 	public static StudentUI instance;

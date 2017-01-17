@@ -3,7 +3,6 @@ package com.dyn.student.gui;
 import java.util.ArrayList;
 
 import com.dyn.DYNServerConstants;
-import com.dyn.DYNServerMod;
 import com.dyn.server.network.NetworkManager;
 import com.dyn.server.network.packets.server.RequestPlotListMessage;
 import com.dyn.server.network.packets.server.ServerCommandMessage;
@@ -52,8 +51,8 @@ public class Home extends Show {
 	}
 
 	private void claimPlot() {
-		if ((DYNServerMod.selection == null) || (DYNServerMod.selection.getStart() == null)
-				|| (DYNServerMod.selection.getEnd() == null)) {
+		if ((StudentUI.selection == null) || (StudentUI.selection.getStart() == null)
+				|| (StudentUI.selection.getEnd() == null)) {
 			// selection is null or not there so do the default
 			student.sendChatMessage("//pos1 " + Math.round((student.posX - 4.5)) + "," + Math.round((student.posY - 1))
 					+ "," + Math.round((student.posZ - 4.5)));
