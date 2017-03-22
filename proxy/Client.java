@@ -61,6 +61,7 @@ public class Client implements Proxy {
 				}
 			};
 
+			StudentUI.frozen.setFlag(false);
 			StudentUI.frozen.addBooleanChangeListener(listener);
 		}
 	}

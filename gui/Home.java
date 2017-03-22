@@ -47,6 +47,8 @@ public class Home extends Show {
 				refreshList();
 			}
 		};
+
+		StudentUI.needsRefresh.setFlag(false);
 		StudentUI.needsRefresh.addBooleanChangeListener(listener, this);
 	}
 
