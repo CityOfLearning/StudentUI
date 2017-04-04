@@ -56,8 +56,8 @@ public class Client implements Proxy {
 				} else {
 					Minecraft.getMinecraft().thePlayer
 							.addChatMessage(new ChatComponentText("You are now free to move"));
-					NetworkManager.sendToServer(new ServerCommandMessage("/p user "
-							+ Minecraft.getMinecraft().thePlayer.getDisplayNameString() + " group remove _FROZEN_"));
+					NetworkManager.sendToServer(new ServerCommandMessage(
+							"/p user " + Minecraft.getMinecraft().thePlayer.getName() + " group remove _FROZEN_"));
 				}
 			};
 

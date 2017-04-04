@@ -115,9 +115,9 @@ public class Home extends Show {
 	private void setNickname() {
 		if (!nameText.getText().isEmpty() && !nameText.getText().equals(NAMES_TEXT)
 				&& !Censor.containsSwear(nameText.getText())) {
-			NetworkManager.sendToServer(new SyncNamesServerMessage(nameText.getText(), student.getDisplayNameString()));
+			NetworkManager.sendToServer(new SyncNamesServerMessage(nameText.getText(), student.getName()));
 			NetworkManager.sendToServer(new ServerCommandMessage(
-					"/nickname " + student.getDisplayNameString() + " " + nameText.getText().replace(' ', '_')));
+					"/nickname " + student.getName() + " " + nameText.getText().replace(' ', '_')));
 		}
 	}
 
