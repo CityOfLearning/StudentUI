@@ -26,7 +26,7 @@ import com.rabbit.gui.show.Show;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 
-public class Home extends Show {
+public class Mail extends Show {
 
 	private EntityPlayerSP student;
 	private SelectStringEntry selectedEntry;
@@ -36,7 +36,7 @@ public class Home extends Show {
 	private String PLOTS_TEXT = "Plot Name";
 	private String NAMES_TEXT = "Nickname";
 
-	public Home() {
+	public Mail() {
 		setBackground(new DefaultBackground());
 		title = "Student Gui";
 		NetworkManager.sendToServer(new RequestPlotListMessage());
