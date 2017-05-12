@@ -12,7 +12,7 @@ import com.dyn.DYNServerMod;
 import com.dyn.server.network.NetworkManager;
 import com.dyn.server.network.packets.server.ServerCommandMessage;
 import com.dyn.student.StudentUI;
-import com.dyn.student.gui.Requests;
+import com.dyn.student.gui.Home;
 import com.dyn.utils.BooleanChangeListener;
 import com.dyn.utils.PlayerAccessLevel;
 import com.rabbit.gui.RabbitGui;
@@ -30,12 +30,12 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 public class Client implements Proxy {
 
-	private KeyBinding studentKey;
+	private KeyBinding homeKey;
 
 	@Override
 	public Map<String, ?> getKeyBindings() {
 		Map<String, KeyBinding> keys = new HashMap();
-		keys.put("student", studentKey);
+//		keys.put("student", homeKey);
 		return keys;
 	}
 
@@ -43,8 +43,8 @@ public class Client implements Proxy {
 	public void init() {
 		if ((DYNServerMod.accessLevel == PlayerAccessLevel.STUDENT)) {
 			MinecraftForge.EVENT_BUS.register(this);
-			studentKey = new KeyBinding("key.toggle.studentui", Keyboard.KEY_M, "key.categories.toggle");
-			ClientRegistry.registerKeyBinding(studentKey);
+//			homeKey = new KeyBinding("key.toggle.studentui", Keyboard.KEY_M, "key.categories.toggle");
+//			ClientRegistry.registerKeyBinding(homeKey);
 
 			BooleanChangeListener listener = (event, show) -> {
 				if (event.getDispatcher().getFlag()) {
@@ -72,9 +72,9 @@ public class Client implements Proxy {
 		if ((Minecraft.getMinecraft().currentScreen instanceof GuiChat)) {
 			return;
 		}
-		if ((DYNServerMod.accessLevel == PlayerAccessLevel.STUDENT) && studentKey.isPressed()) {
-			RabbitGui.proxy.display(new Requests());
-		}
+//		if ((DYNServerMod.accessLevel == PlayerAccessLevel.STUDENT) && homeKey.isPressed()) {
+//			RabbitGui.proxy.display(new Home());
+//		}
 	}
 
 	@SubscribeEvent
